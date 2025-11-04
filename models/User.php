@@ -73,10 +73,10 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-       
-        return self::find()->where(['access_token' => $token]->one());
+        return self::find()->where(['access_token' => $token])->one();
          
     }
+  
 
     /**
      * Finds user by username
