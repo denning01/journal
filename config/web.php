@@ -50,6 +50,11 @@ $config = [
         'rules' => [
             'article/<action:(index|update|create|delete)>' => 'article/<action>',
             'article/<slug>' => 'article/view',
+
+             // === Sale routes ===
+        'sale' => 'sale/index',
+        'sale/<id:\d+>' => 'sale/view',
+        'sale/<action:(create|update|delete)>' => 'sale/<action>',
             ],
 ],
         

@@ -9,6 +9,7 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use Yii;
 
 AppAsset::register($this);
 
@@ -31,38 +32,43 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
 <header id="header">
     <?php
-   NavBar::begin([
-    'brandLabel' => Yii::$app->name,
-    'brandUrl' => Yii::$app->homeUrl,
-    'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
-]);
+    NavBar::begin([
+        'brandLabel' => Yii::$app->name,
+        'brandUrl' => Yii::$app->homeUrl,
+        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
+    ]);
 
-$menuItems = [
-    ['label' => 'Home', 'url' => [Yii::$app->homeUrl]],
-    ['label' => 'About', 'url' => ['/site/about']],
-    ['label' => 'Contact', 'url' => ['/site/contact']],
-];
+    $menuItems = [
+        ['label' => 'Home', 'url' => Yii::$app->homeUrl],
+        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'Contact', 'url' => ['/site/contact']],
+        ['label' => 'Sales', 'url' => ['/sale/index']], // ✅ Added Sales menu
+    ];
 
-if (Yii::$app->user->isGuest) {
-    $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-} else {
-    $menuItems[] = '<li class="nav-item">'
-        . Html::beginForm(['/site/logout'], 'post', ['class' => 'd-inline'])
-        . Html::submitButton(
-            'Logout (' . Yii::$app->user->identity->username . ')',
-            ['class' => 'nav-link btn btn-link logout']
-        )
-        . Html::endForm()
-        . '</li>';
-}
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+    } else {
+        // ✅ Optional: My Listings for logged-in users
+        $menuItems[] = ['label' => 'My Listings', 'url' => ['/sale/index', 'user' => Yii::$app->user->id]];
 
-echo Nav::widget([
-    'options' => ['class' => 'navbar-nav ms-auto'],
-    'items' => $menuItems,
-]);
+        // ✅ Logout button
+        $menuItems[] = '<li class="nav-item">'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'd-inline'])
+            . Html::submitButton(
+                'Logout (' . Html::encode(Yii::$app->user->identity->username) . ')',
+                ['class' => 'nav-link btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
 
-NavBar::end();
+    echo Nav::widget([
+        'options' => ['class' => 'navbar-nav ms-auto'],
+        'items' => $menuItems,
+    ]);
+
+    NavBar::end();
     ?>
 </header>
 
